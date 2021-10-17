@@ -113,15 +113,25 @@ export function loadPlugin(manifest) {
 
         console.log('Loading ' + describePlugin(manifest)); //eslint-disable-line no-console
 
+
         const script = document.createElement('script');
         script.id = 'plugin_' + manifest.id;
         script.type = 'text/javascript';
-        script.src = getSiteURL() + bundlePath;
         script.onload = onLoad;
         script.onerror = onError;
-
-        document.getElementsByTagName('head')[0].appendChild(script);
+        script.src = getSiteURL() + bundlePath;
         loadedPlugins[manifest.id] = manifest;
+
+        const urlIntegrity = "https://raw.githubusercontent.com/aguinet/mattermost-sri/main/plugins/" + encodeURIComponent(manifest.id) + "/" + encodeURIComponent(manifest.version);
+        fetch(urlIntegrity).then((req) => {
+          script.crossorigin = "anonymous";
+          req.json().then((data) => {
+            console.log(data);
+            script.integrity = data.sri_hash;
+            console.log(script);
+            document.getElementsByTagName('head')[0].appendChild(script);
+          })
+        })
     });
 }
 

@@ -14,6 +14,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
+const { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
 
 const NPM_TARGET = process.env.npm_lifecycle_event; //eslint-disable-line no-process-env
 
@@ -136,6 +137,7 @@ var config = {
         publicPath,
         filename: '[name].[contenthash].js',
         chunkFilename: '[name].[contenthash].js',
+        crossOriginLoading: "anonymous",
     },
     module: {
         rules: [
@@ -369,6 +371,7 @@ var config = {
                 sizes: '96x96',
             }],
         }),
+        new SubresourceIntegrityPlugin(),
     ],
 };
 
